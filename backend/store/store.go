@@ -6,6 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	IdVar = "accountID"
+)
+
 var (
 	allData []*PantryList
 )

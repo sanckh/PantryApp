@@ -5,8 +5,8 @@ to a separate repo at some point to optimize build space.
 
 ### Current functionality
 
-* `localhost/list` returns the pantry list data
-* `localhost/add` adds the desired items to the pantry list
+* `localhost/pantry/list` returns the pantry list data
+* `localhost/pantry/add` adds the desired item to the pantry list
 
 ### Data Storage
 
@@ -26,3 +26,6 @@ will aim the code there instead.
 
  Does this server actually run yet? Well, yes. But it won't handle any actual data
  since the handlers are currently using mock data. (We gotta choose the transfer format)
+
+ To test the current functionality, run the test script `pantryTest.sh` while the backend is
+ running in a different terminal tab.

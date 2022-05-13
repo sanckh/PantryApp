@@ -8,6 +8,7 @@ import (
 
 const (
 	tempAddr = "localhost" // TODO get actual address to run (hosting)
+	tempPort = ":8080"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 	e := engine.NewEngine(logger)
 
 	// Run the server
-	err := e.Run(tempAddr)
+	err := e.Run(tempPort)
 	if err != nil {
 		panic(err)
 	}
