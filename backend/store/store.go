@@ -6,6 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	IdVar = "accountID"
+)
+
 var (
 	allData []*PantryList
 )
@@ -18,6 +22,7 @@ type PantryList struct {
 type PantryItem struct {
 	Name       string
 	Expiration string
+	// TODO add quantity
 }
 
 func InitMockData() {

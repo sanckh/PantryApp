@@ -5,10 +5,17 @@ import (
 )
 
 func AddItems(c *gin.Context) {
-	owner := c.GetString("id") // This gets the identifier out of the http Request
+	owner := c.GetHeader(IdVar) // This gets the identifier out of the http request
 
 	// Magic here TBD, get items out of request
-	toAdd := []*PantryItem{}
+	// TODO: Actually make this sensible
+	item := c.GetHeader("item")
+	toAdd := []*PantryItem{
+		{
+			Name:       item,
+			Expiration: "Eventually",
+		},
+	}
 
 	// This is mocked to use local data in place of a DB
 	added := false

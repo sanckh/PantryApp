@@ -7,7 +7,7 @@ import (
 )
 
 func ListItems(c *gin.Context) {
-	owner := c.GetString("id") // This gets the identifier out of the http Request
+	owner := c.GetHeader(IdVar) // This gets the identifier out of the http Request
 
 	// This is mocked to use local data in place of a DB
 	var data *PantryList
