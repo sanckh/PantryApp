@@ -22,6 +22,7 @@ type PantryList struct {
 type PantryItem struct {
 	Name       string
 	Expiration string
+	// TODO add quantity
 }
 
 func InitMockData() {
