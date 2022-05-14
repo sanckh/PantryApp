@@ -8,12 +8,12 @@ import (
 )
 
 func ListItems(c *gin.Context) {
-	owner := c.GetHeader(IdVar) // This gets the identifier out of the http Request
+	acc := c.GetString(IdVar) // Auth supplies this value
 
 	// This is mocked to use local data in place of a DB
 	var data *model.PantryList
 	for _, pList := range allData {
-		if pList.OwnerID == owner {
+		if pList.AccountID == acc {
 			data = pList
 			break
 		}

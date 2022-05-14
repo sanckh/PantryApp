@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -10,6 +9,11 @@ import (
 	"github.com/sanckh/PantryApp/backend/model"
 	"golang.org/x/crypto/bcrypt"
 )
+
+type metaClaims struct {
+	AccountID string
+	jwt.StandardClaims
+}
 
 // Register registers a new user given the provided data
 func Register(c *gin.Context) {
@@ -25,7 +29,7 @@ func Register(c *gin.Context) {
 	user := model.User{
 		Id:       data.Id, // TODO verify uniqueness
 		Name:     data.Name,
-		Email:    data.Email,
+		Email:    data.Email, // TODO verify uniqueness
 		Password: password,
 	}
 
@@ -45,15 +49,15 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	pantryID := data.Id
+	email := data.Email
 	user := &model.User{}
-	for _, u := range allUsers {
-		if u.Id == pantryID {
+	for _, u := range allUsers { // TODO use database
+		if u.Email == email {
 			user = u
 		}
 	}
 
-	if pantryID == "" {
+	if user.Id == "" {
 		c.JSON(http.StatusNotFound, gin.H{})
 		return
 	}
@@ -64,10 +68,14 @@ func Login(c *gin.Context) {
 	}
 
 	tokenExp := time.Now().Add(time.Hour * 1)
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Issuer:    user.Id,
-		ExpiresAt: tokenExp.Unix(),
-	})
+	mc := metaClaims{
+		AccountID: user.Id,
+		StandardClaims: jwt.StandardClaims{
+			Issuer:    user.Id,
+			ExpiresAt: tokenExp.Unix(),
+		},
+	}
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, mc)
 
 	token, err := claims.SignedString([]byte(SigningKey))
 
@@ -82,7 +90,6 @@ func Login(c *gin.Context) {
 		Value:   token,
 		Expires: tokenExp,
 	})
-	fmt.Println("cookie set")
 	c.JSON(http.StatusOK, gin.H{"message": "Login Successfully"})
 }
 
@@ -100,7 +107,8 @@ func Authenticate(c *gin.Context) {
 	}
 
 	// Parse and validate token
-	tkn, err := jwt.Parse(cookie, func(token *jwt.Token) (interface{}, error) {
+	mc := &metaClaims{}
+	tkn, err := jwt.ParseWithClaims(cookie, mc, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SigningKey), nil
 	})
 	if err != nil {
@@ -115,4 +123,7 @@ func Authenticate(c *gin.Context) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
+
+	// Add accountID to context
+	c.Set(IdVar, mc.AccountID)
 }

@@ -1,15 +1,18 @@
 package model
 
+// The ID for the User struct links to the OwnerID of the PantryList struct
+// Multiple users can be linked to a single pantry
+
 type User struct {
 	Id       string `json:"user_id"`
 	Name     string `json:"user_name"`
-	Email    string `json:"user_email" gorm:"unique"`
+	Email    string `json:"user_email"`
 	Password []byte `json:"-"`
 }
 
 type PantryList struct {
-	OwnerID string `json:"pantry_id" gorm:"unique"`
-	Items   []*PantryItem
+	AccountID string `json:"pantry_id"`
+	Items     []*PantryItem
 }
 
 type PantryItem struct {
