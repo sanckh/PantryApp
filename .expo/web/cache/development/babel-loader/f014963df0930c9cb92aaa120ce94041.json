@@ -1,1 +1,0 @@
-{"ast":null,"code":"import TabBar from \"./src/TabBar\";\nexport default TabBar;","map":{"version":3,"names":["TabBar"],"sources":["C:/Programming/Pantry App/node_modules/react-native-custom-navigation-tabs/index.js"],"sourcesContent":["import TabBar from './src/TabBar'\n\nexport default TabBar"],"mappings":"AAAA,OAAOA,MAAP;AAEA,eAAeA,MAAf"},"metadata":{},"sourceType":"module"}

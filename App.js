@@ -4,7 +4,6 @@ import { Provider } from 'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import { theme } from './core/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
@@ -24,7 +23,7 @@ const inventoryName = 'Inventory';
 const groceryName = 'Grocery';
 
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
   function Home() {
@@ -76,7 +75,7 @@ export default function App() {
     <Provider theme={theme}>
         <NavigationContainer>
         <Stack.Navigator
-        initialRouteName = "StartScreen"
+        initialRouteName = "Home"
         screenOptions = {{
           headerShown: false,
         }}
