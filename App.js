@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import { theme } from './core/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+// import 'react-native-gesture-handler';
 
 
 
@@ -76,7 +77,7 @@ export default function App() {
     <Provider theme={theme}>
         <NavigationContainer>
         <Stack.Navigator
-        initialRouteName = "StartScreen"
+        initialRouteName = "Home"
         screenOptions = {{
           headerShown: false,
         }}
