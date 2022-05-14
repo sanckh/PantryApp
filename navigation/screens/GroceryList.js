@@ -3,26 +3,118 @@ import {StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, TouchableOp
 import { theme } from '../../core/theme';
 import Header from '../../components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const GroceryList = () => {
     //state can go here
-    const [todos, setTodos] = React.useState([
-        {id:1, task:"First todo", completed: true},
-        {id:2, task:"Second todo", completed: true},
-    ]);
+    const [todos, setTodos] = React.useState([]);
+    const [textInput, setTextInput] = React.useState('');
 
-const ListItem = ({todo}) => {
-    return (
-        <View style = {styles.listItem}>
-            <View>
-                <Text style = {{fontWeight: 'bold', fontSize: 15, color: theme.colors.primary}}>
-                    {todo?.task}
-                </Text>
+    React.useEffect(() => {
+    const [todos, setTodos] = React.useState([]);
+    const [textInput, setTextInput] = React.useState('')
+    },[]);
+    
+    React.useEffect(() => {
+        getTodosFromUserDevice();
+    })
+
+    React.useEffect(() => {
+        saveTodoToUserDevice(todos);
+      }, [todos]);
+
+    const addTodo = () => {
+    if (textInput == '') {
+        Alert.alert('Error', 'Please input todo');
+    } else {
+        const newTodo = {
+        id: Math.random(),
+        task: textInput,
+        completed: false,
+        };
+        setTodos([...todos, newTodo]);
+        setTextInput('');
+    }
+    };
+
+    const saveTodoToUserDevice = async todos => {
+    try {
+        const stringifyTodos = JSON.stringify(todos);
+        await AsyncStorage.setItem('todos', stringifyTodos);
+    } catch (error) {
+        console.log(error);
+    }
+    };
+
+    const getTodosFromUserDevice = async () => {
+        try {
+          const todos = await AsyncStorage.getItem('todos');
+          if (todos != null) {
+            setTodos(JSON.parse(todos));
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      const markTodoComplete = todoId => {
+        const newTodosItem = todos.map(item => {
+          if (item.id == todoId) {
+            return {...item, completed: true};
+          }
+          return item;
+        });
+    
+        setTodos(newTodosItem);
+      };
+
+      const deleteTodo = todoId => {
+        const newTodosItem = todos.filter(item => item.id != todoId);
+        setTodos(newTodosItem);
+      };
+
+      const clearAllTodos = () => {
+        Alert.alert('Confirm', 'Clear todos?', [
+          {
+            text: 'Yes',
+            onPress: () => setTodos([]),
+          },
+          {
+            text: 'No',
+          },
+        ]);
+      };
+
+      const ListItem = ({todo}) => {
+        return (
+          <View style={styles.listItem}>
+            <View style={{flex: 1}}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 15,
+                  color: COLORS.primary,
+                  textDecorationLine: todo?.completed ? 'line-through' : 'none',
+                }}>
+                {todo?.task}
+              </Text>
             </View>
-        </View>
-    )
-}
+            {!todo?.completed && (
+              <TouchableOpacity onPress={() => markTodoComplete(todo.id)}>
+                <View style={[styles.actionIcon, {backgroundColor: 'green'}]}>
+                  <Ionicons name="done" size={20} color="white" />
+                </View>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={() => deleteTodo(todo.id)}>
+              <View style={styles.actionIcon}>
+                <Ionicons name="delete" size={20} color="white" />
+              </View>
+            </TouchableOpacity>
+          </View>
+        );
+      };
 
     return(
 <SafeAreaView style ={{flex: 1, backgroundColor: theme.colors.white}}>
@@ -39,18 +131,20 @@ const ListItem = ({todo}) => {
     />
     <View style = {styles.footer}>
         <View style ={styles.inputContainer}>
-            <TextInput placeholder = "Add Item"/>
+        <TextInput
+            value={textInput}
+            placeholder="Add Todo"
+            onChangeText={text => setTextInput(text)}
+          />
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress = {addTodo}>
             <View style = {styles.iconContainer}>
                 <Ionicons name = "add" color= 'white' size = {30}/>
             </View>
         </TouchableOpacity>
     </View>
-
 </SafeAreaView>
-
     );
 }
 
@@ -110,6 +204,22 @@ listItem: {
     },
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
+  },
+  actionIcon: {
+    height: 25,
+    width: 25,
+    backgroundColor: theme.colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
+    marginLeft: 5,
+    borderRadius: 3,
+  },
+  header: {
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 
 })

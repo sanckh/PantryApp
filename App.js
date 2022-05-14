@@ -1,9 +1,8 @@
 import * as React from 'react';
-import {View, Text} from 'react-native';
 import { Provider } from 'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
+import createMaterialBottomTabNavigator from '@react-navigation/material-bottom-tabs'
 import { theme } from './core/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
@@ -23,7 +22,7 @@ const inventoryName = 'Inventory';
 const groceryName = 'Grocery';
 
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 
   function Home() {
