@@ -4,33 +4,26 @@ import (
 	"encoding/json"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sanckh/PantryApp/backend/model"
 )
 
 const (
-	IdVar = "accountID"
+	IdVar      = "accountID"
+	SigningKey = "beefcakes"
 )
 
 var (
-	allData []*PantryList
+	allData  []*model.PantryList
+	allUsers []*model.User
 )
-
-type PantryList struct {
-	OwnerID string
-	Items   []*PantryItem
-}
-
-type PantryItem struct {
-	Name       string
-	Expiration string
-	// TODO add quantity
-}
-
-func InitMockData() {
-	allData = []*PantryList{}
-}
 
 // This is very basic and unchecked, will need to be adjusted later
 func HandleError(c *gin.Context, err error) {
 	b, _ := json.Marshal(err.Error())
 	c.Writer.Write(b)
+}
+
+func InitMockData() {
+	allData = []*model.PantryList{}
+	allUsers = []*model.User{}
 }

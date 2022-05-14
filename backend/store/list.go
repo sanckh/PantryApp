@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sanckh/PantryApp/backend/model"
 )
 
 func ListItems(c *gin.Context) {
 	owner := c.GetHeader(IdVar) // This gets the identifier out of the http Request
 
 	// This is mocked to use local data in place of a DB
-	var data *PantryList
+	var data *model.PantryList
 	for _, pList := range allData {
 		if pList.OwnerID == owner {
 			data = pList

@@ -2,6 +2,7 @@ package store
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/sanckh/PantryApp/backend/model"
 )
 
 func AddItems(c *gin.Context) {
@@ -10,7 +11,7 @@ func AddItems(c *gin.Context) {
 	// Magic here TBD, get items out of request
 	// TODO: Actually make this sensible
 	item := c.GetHeader("item")
-	toAdd := []*PantryItem{
+	toAdd := []*model.PantryItem{
 		{
 			Name:       item,
 			Expiration: "Eventually",
@@ -27,7 +28,7 @@ func AddItems(c *gin.Context) {
 	}
 	// If no owner account exists, add one
 	if !added {
-		newAccount := &PantryList{
+		newAccount := &model.PantryList{
 			OwnerID: owner,
 			Items:   toAdd,
 		}

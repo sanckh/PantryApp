@@ -10,10 +10,14 @@ import (
 
 func handleRoutes(e *gin.Engine, logger *log.Logger) {
 
+	// Auth routes
+	e.Handle("POST", "/register", store.Register)
+	e.Handle("POST", "/login", store.Login)
+
+	// Pantry routes
 	storeRoutes := e.Group("/pantry")
-	// Handle the various routes desired
-	storeRoutes.Handle("GET", "/list", store.ListItems)
-	storeRoutes.Handle("POST", "/add", store.AddItems)
+	storeRoutes.Handle("GET", "/list", store.Authenticate, store.ListItems)
+	storeRoutes.Handle("POST", "/add", store.Authenticate, store.AddItems)
 
 	// Not handled
 	e.NoRoute(func(ctx *gin.Context) { ctx.JSON(http.StatusNotFound, gin.H{}) })
