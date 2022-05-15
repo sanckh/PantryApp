@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Provider } from 'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
-import createMaterialBottomTabNavigator from '@react-navigation/material-bottom-tabs'
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs'
 import { theme } from './core/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import 'react-native-gesture-handler';
 
 
 
@@ -23,53 +24,50 @@ const groceryName = 'Grocery';
 
 
 const Tab = createMaterialBottomTabNavigator();
-const Stack = createStackNavigator();
+
 
   function Home() {
     return(
-      <Tab.Navigator
-          screenOptions={({route}) => ({
-              tabBarIcon: ({focused, color, size}) => {
-                  let iconName;
-                  let rn = route.name;
+      <Provider theme = {theme}>
+        <Tab.Navigator
+            barStyle = {{
+              backgroundColor: theme.colors.primary, 
+              padding: 8,
+              
+            }}
+            labeled = 'true'
+            
+            screenOptions={({route}) => ({
+                tabBarIcon: ({focused, color, size}) => {
+                    let iconName;
+                    let rn = route.name;
 
-                  if (rn === groceryName)
-                  {
-                      iconName = focused ? 'list' : 'list-outline';
-                  }
-                  else if (rn === inventoryName)
-                  {
-                      iconName = focused ? 'fast-food' : 'fast-food-outline'
-                  }
-                  else if (rn === settingsName)
-                  {
-                      iconName = focused ? 'settings' : 'settings-outline'
-                  }
-                  return <Ionicons name={iconName} size={30} color={color}/>
-              },
-              tabBarStyle:
-                  {
-                      padding: 0,
-                      margin: 8,
-                      height: 60,
-                      borderRadius: 50,
-                      borderWidth: 0,
-                      borderColor: '#000000',
-                      position: 'absolute',
-                      shadowRadius: 1,
-                      shadowOpacity: 50
-
-                  },
-              tabBarLabel: false, //can add or remove the label
-          })}>
-            <Tab.Screen name={'Grocery'} component={GroceryList} />
-            <Tab.Screen name={'Inventory'} component={Inventory} />
-            <Tab.Screen name={'Settings'} component={Settings} />
-        </Tab.Navigator>
+                    if (rn === groceryName)
+                    {
+                        iconName = focused ? 'list' : 'list-outline';
+                    }
+                    else if (rn === inventoryName)
+                    {
+                        iconName = focused ? 'fast-food' : 'fast-food'
+                    }
+                    else if (rn === settingsName)
+                    {
+                        iconName = focused ? 'settings' : 'settings'
+                    }
+                    return <Ionicons name={iconName} size={25} color={color}/>
+                },
+            })}>
+              <Tab.Screen name={'Grocery'} component={GroceryList} />
+              <Tab.Screen name={'Inventory'} component={Inventory} />
+              <Tab.Screen name={'Settings'} component={Settings} />
+          </Tab.Navigator>
+        </Provider>
     )
   }
 
-export default function App() {
+  const Stack = createStackNavigator();
+
+const App = () => {
   return (
     <Provider theme={theme}>
         <NavigationContainer>
@@ -88,5 +86,7 @@ export default function App() {
     </Provider> 
   );
 }
+
+export default App;
 
 

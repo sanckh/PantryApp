@@ -1,24 +1,22 @@
 import React from 'react';
-import {StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import {StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { theme } from '../../core/theme';
-import Header from '../../components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from '../../components/Header';
+import { clear } from 'react-native/Libraries/LogBox/Data/LogBoxData';
+
+
 
 
 const GroceryList = () => {
     //state can go here
     const [todos, setTodos] = React.useState([]);
     const [textInput, setTextInput] = React.useState('');
-
-    React.useEffect(() => {
-    const [todos, setTodos] = React.useState([]);
-    const [textInput, setTextInput] = React.useState('')
-    },[]);
     
     React.useEffect(() => {
         getTodosFromUserDevice();
-    })
+    }, []);
 
     React.useEffect(() => {
         saveTodoToUserDevice(todos);
@@ -94,7 +92,7 @@ const GroceryList = () => {
                 style={{
                   fontWeight: 'bold',
                   fontSize: 15,
-                  color: COLORS.primary,
+                  color: theme.colors.text,
                   textDecorationLine: todo?.completed ? 'line-through' : 'none',
                 }}>
                 {todo?.task}
@@ -103,13 +101,13 @@ const GroceryList = () => {
             {!todo?.completed && (
               <TouchableOpacity onPress={() => markTodoComplete(todo.id)}>
                 <View style={[styles.actionIcon, {backgroundColor: 'green'}]}>
-                  <Ionicons name="done" size={20} color="white" />
+                  <Ionicons name="checkmark" size={20} color="white" />
                 </View>
               </TouchableOpacity>
             )}
             <TouchableOpacity onPress={() => deleteTodo(todo.id)}>
               <View style={styles.actionIcon}>
-                <Ionicons name="delete" size={20} color="white" />
+                <Ionicons name="trash" size={20} color="white" />
               </View>
             </TouchableOpacity>
           </View>
@@ -119,10 +117,15 @@ const GroceryList = () => {
     return(
 <SafeAreaView style ={{flex: 1, backgroundColor: theme.colors.white}}>
     <View style = {styles.header}>
-        <Header>
-            Grocery List
+    <Header
+          style={{
+            fontWeight: 'bold',
+            fontSize: 20,
+            color: theme.colors.primary,
+          }}>
+          Grocery List
         </Header>
-        <Ionicons name="trash-bin" size = {25} color = 'red'/>
+        <Ionicons name="trash" size = {25} color = 'red' onPress ={clearAllTodos}/>
     </View>
     <FlatList 
     showsVerticalScrollIndicator = {false}
@@ -132,8 +135,9 @@ const GroceryList = () => {
     <View style = {styles.footer}>
         <View style ={styles.inputContainer}>
         <TextInput
+            style = {styles.textInput}
             value={textInput}
-            placeholder="Add Todo"
+            placeholder="Add Item"
             onChangeText={text => setTextInput(text)}
           />
         </View>
@@ -149,79 +153,65 @@ const GroceryList = () => {
 }
 
 const styles = StyleSheet.create({
-header: {
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-},
-footer: {
-    position: 'absolute',
-    bottom: 0,
-    color: theme.colors.white,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-},
-inputContainer: {
-    elevation: 40,
-    flex: 1,
-    height: 50,
-    marginVertical: 20,
-    marginRight: 20,
-    borderRadius: 30,
-    padding: 15,
-    paddingLeft: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-	width: 0,
-	height: 3,
+    footer: {
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      backgroundColor: theme.colors.white,
     },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-},
-iconContainer: {
-    height: 50,
-    width: 50,
-    backgroundColor: theme.colors.primary,
-    borderRadius: 25,
-    elevation: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-},
-listItem: {
-    padding: 20,
-    backgroundColor: theme.colors.white,
-    flexDirection: 'row',
-    elevation: 12,
-    borderRadius: 7,
-    marginVertical: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-	width: 0,
-	height: 3,
+    inputContainer: {
+      height: 50,
+      paddingHorizontal: 20,
+      elevation: 40,
+      backgroundColor: theme.colors.white,
+      flex: 1,
+      marginVertical: 20,
+      marginRight: 20,
+      borderRadius: 30,
     },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-  },
-  actionIcon: {
-    height: 25,
-    width: 25,
-    backgroundColor: theme.colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
-    marginLeft: 5,
-    borderRadius: 3,
-  },
-  header: {
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-
-})
+    iconContainer: {
+      height: 50,
+      width: 50,
+      backgroundColor: theme.colors.primary,
+      elevation: 40,
+      borderRadius: 25,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  
+    listItem: {
+      padding: 20,
+      backgroundColor: theme.colors.white,
+      flexDirection: 'row',
+      elevation: 12,
+      borderRadius: 7,
+      marginVertical: 10,
+    },
+    actionIcon: {
+      height: 25,
+      width: 25,
+      backgroundColor: theme.colors.white,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'red',
+      marginLeft: 5,
+      borderRadius: 3,
+    },
+    header: {
+      padding: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    textInput: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingLeft: 5
+    }
+  });
 
 export default GroceryList;
