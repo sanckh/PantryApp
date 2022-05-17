@@ -1,37 +1,33 @@
 package store
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sanckh/PantryApp/backend/model"
 )
 
 func AddItems(c *gin.Context) {
-	owner := c.GetHeader(IdVar) // This gets the identifier out of the http request
+	acc := c.GetString(IdVar) // Auth supplies this value
 
-	// Magic here TBD, get items out of request
-	// TODO: Actually make this sensible
-	item := c.GetHeader("item")
-	toAdd := []*model.PantryItem{
-		{
-			Name:       item,
-			Expiration: "Eventually",
-		},
+	// Get items from request body
+	toAdd := []*model.PantryItem{}
+	if err := c.BindJSON(&toAdd); err != nil {
+		fmt.Println(err.Error())
+		return
 	}
 
-	// This is mocked to use local data in place of a DB
-	added := false
-	for _, pList := range allData {
-		if pList.OwnerID == owner {
-			pList.Items = append(pList.Items, toAdd...)
-			added = true
-		}
-	}
+	pantry := GetPantryForAccount(acc)
 	// If no owner account exists, add one
-	if !added {
-		newAccount := &model.PantryList{
-			OwnerID: owner,
-			Items:   toAdd,
+	if pantry == nil {
+		newList := &model.PantryList{
+			AccountID: acc,
+			Items:     toAdd,
 		}
-		allData = append(allData, newAccount) // TODO replace with database implementation
+		AddPantryForAccount(newList)
+		return
 	}
+	// Add items to pantry list
+	pantry.Items = append(pantry.Items, toAdd...)
+	UpdatePantry(pantry)
 }
