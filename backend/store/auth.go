@@ -33,8 +33,8 @@ func Register(c *gin.Context) {
 		Password: password,
 	}
 
-	// Mock for now
-	allUsers = append(allUsers, &user)
+	// Register new user
+	AddUser(&user)
 
 	// Return user
 	c.JSON(http.StatusOK, &user)
@@ -49,13 +49,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	email := data.Email
-	user := &model.User{}
-	for _, u := range allUsers { // TODO use database
-		if u.Email == email {
-			user = u
-		}
-	}
+	user := GetUserFromEmail(data.Email)
 
 	if user.Id == "" {
 		c.JSON(http.StatusNotFound, gin.H{})

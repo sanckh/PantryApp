@@ -10,27 +10,24 @@ import (
 func AddItems(c *gin.Context) {
 	acc := c.GetString(IdVar) // Auth supplies this value
 
-	// Get item from request body
+	// Get items from request body
 	toAdd := []*model.PantryItem{}
 	if err := c.BindJSON(&toAdd); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	// This is mocked to use local data in place of a DB
-	added := false
-	for _, pList := range allData {
-		if pList.AccountID == acc {
-			pList.Items = append(pList.Items, toAdd...)
-			added = true
-		}
-	}
+	pantry := GetPantryForAccount(acc)
 	// If no owner account exists, add one
-	if !added {
-		newAccount := &model.PantryList{
+	if pantry == nil {
+		newList := &model.PantryList{
 			AccountID: acc,
 			Items:     toAdd,
 		}
-		allData = append(allData, newAccount) // TODO replace with database implementation
+		AddPantryForAccount(newList)
+		return
 	}
+	// Add items to pantry list
+	pantry.Items = append(pantry.Items, toAdd...)
+	UpdatePantry(pantry)
 }
