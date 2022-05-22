@@ -4,8 +4,7 @@ import { theme } from '../../core/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../../components/Header';
-import { clear } from 'react-native/Libraries/LogBox/Data/LogBoxData';
-
+import RnIncrementDecrementBtn from '../../components/IncDecButton';
 
 
 
@@ -93,21 +92,28 @@ const GroceryList = () => {
                   fontWeight: 'bold',
                   fontSize: 15,
                   color: theme.colors.text,
+                  margin: 6,
                   textDecorationLine: todo?.completed ? 'line-through' : 'none',
                 }}>
                 {todo?.task}
               </Text>
             </View>
+            <TouchableOpacity style= {styles.incButton}>
+            <View >
+              <RnIncrementDecrementBtn/>
+            </View>
+            </TouchableOpacity>
             {!todo?.completed && (
-              <TouchableOpacity onPress={() => markTodoComplete(todo.id)}>
-                <View style={[styles.actionIcon, {backgroundColor: 'green'}]}>
-                  <Ionicons name="checkmark" size={20} color="white" />
+              <TouchableOpacity onPress={() => markTodoComplete(todo.id)} style = {styles.actionIcon}>
+                <View style={[{backgroundColor: 'green', borderRadius: 5}]}>
+                  <Ionicons name="checkmark" size={29} color="white" />
                 </View>
               </TouchableOpacity>
-            )}
-            <TouchableOpacity onPress={() => deleteTodo(todo.id)}>
-              <View style={styles.actionIcon}>
-                <Ionicons name="trash" size={20} color="white" />
+              
+            )}      
+            <TouchableOpacity onPress={() => deleteTodo(todo.id)} style = {styles.actionIcon}>
+              <View style={[{backgroundColor: 'red', borderRadius: 5}]}>
+                <Ionicons name="trash" size={29} color="white" />
               </View>
             </TouchableOpacity>
           </View>
@@ -120,7 +126,7 @@ const GroceryList = () => {
     <Header
           style={{
             fontWeight: 'bold',
-            fontSize: 20,
+            fontSize: 25,
             color: theme.colors.primary,
           }}>
           Grocery List
@@ -191,14 +197,11 @@ const styles = StyleSheet.create({
       marginVertical: 10,
     },
     actionIcon: {
-      height: 25,
-      width: 25,
       backgroundColor: theme.colors.white,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'red',
       marginLeft: 5,
-      borderRadius: 3,
+      alignContent: 'center'
     },
     header: {
       padding: 20,
@@ -211,7 +214,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 10,
         paddingLeft: 5
-    }
+    },
+    incButton: {
+      backgroundColor: theme.colors.white,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: 5,
+      borderRadius: 5,
+        
+    },
   });
 
 export default GroceryList;

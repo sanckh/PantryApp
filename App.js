@@ -3,10 +3,12 @@ import { Provider } from 'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs'
-import { theme } from './core/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import 'react-native-gesture-handler';
 
+
+//components
+import { theme } from './core/theme';
 
 
 //screens
