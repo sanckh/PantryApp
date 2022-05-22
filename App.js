@@ -59,8 +59,8 @@ const Tab = createMaterialBottomTabNavigator();
                     return <Ionicons name={iconName} size={25} color={color}/>
                 },
             })}>
-              <Tab.Screen name={'Grocery'} component={GroceryList} />
               <Tab.Screen name={'Inventory'} component={Inventory} />
+              <Tab.Screen name={'Grocery'} component={GroceryList} />
               <Tab.Screen name={'Settings'} component={Settings} />
           </Tab.Navigator>
         </Provider>
