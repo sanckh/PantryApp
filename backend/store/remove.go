@@ -7,7 +7,7 @@ import (
 	"github.com/sanckh/PantryApp/backend/model"
 )
 
-func RemoveItems(c *gin.Context) {
+func RemovePantryItems(c *gin.Context) {
 	acc := c.GetString(IdVar) // Auth supplies this value
 
 	// Get items from request body
@@ -18,6 +18,21 @@ func RemoveItems(c *gin.Context) {
 	}
 
 	for _, item := range toRemove {
-		RemoveItem(acc, item)
+		RemovePantryItem(acc, item)
+	}
+}
+
+func RemoveGroceryItems(c *gin.Context) {
+	acc := c.GetString(IdVar) // Auth supplies this value
+
+	// Get items from request body
+	toRemove := []*model.GroceryItem{}
+	if err := c.BindJSON(&toRemove); err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	for _, item := range toRemove {
+		RemoveGroceryItem(acc, item)
 	}
 }
