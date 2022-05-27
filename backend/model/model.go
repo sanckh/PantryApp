@@ -20,3 +20,13 @@ type PantryItem struct {
 	Expiration string `json:"item_expiration"`
 	Quantity   uint   `json:"item_quantity"`
 }
+
+type GroceryList struct {
+	AccountID string `json:"pantry_id"`
+	Items     []*GroceryItem
+}
+
+type GroceryItem struct {
+	Name     string `json:"grocery_item_name"`
+	Quantity uint   `json:"grocery_item_quantity"`
+}
