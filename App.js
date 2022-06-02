@@ -29,39 +29,51 @@ const Stack = createStackNavigator()
 
 function Home() {
   return (
+    <Provider theme={theme}>
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName
-          let rn = route.name
+      initialRouteName='Inventory'
+      activeColor='#fff'
+      shifting = 'true'
+      barStyle= {{
 
-          if (rn === groceryName) {
-            iconName = focused ? 'list' : 'list-outline'
-          } else if (rn === inventoryName) {
-            iconName = focused ? 'fast-food' : 'fast-food-outline'
-          } else if (rn === settingsName) {
-            iconName = focused ? 'settings' : 'settings-outline'
-          }
-          return <Ionicons name={iconName} size={30} color={color} />
-        },
-        tabBarStyle: {
-          padding: 0,
-          margin: 8,
-          height: 60,
-          borderRadius: 50,
-          borderWidth: 0,
-          borderColor: '#000000',
-          position: 'absolute',
-          shadowRadius: 1,
-          shadowOpacity: 50,
-        },
-        tabBarLabel: false, //can add or remove the label
-      })}
+    }}
+     
     >
-      <Tab.Screen name={'Grocery'} component={GroceryList} />
-      <Tab.Screen name={'Inventory'} component={Inventory} />
-      <Tab.Screen name={'Settings'} component={Settings} />
+      <Tab.Screen 
+      name={'Grocery'} 
+      component={GroceryList}
+      options={{
+        tabBarLabel: 'Grocery List',
+        tabBarColor: '#009387',
+        tabBarIcon: ({ color }) => (
+          <Ionicons name = 'list' color = {color} size = {26} /> 
+        ),
+      }}
+      />
+      <Tab.Screen 
+      name={'Inventory'} 
+      component={Inventory} 
+      options={{
+        tabBarLabel: 'Inventory',
+        tabBarColor: '#1f65ff',
+        tabBarIcon: ({ color }) => (
+          <Ionicons name = 'fast-food' color = {color} size = {26} /> 
+        ),
+      }}
+      />
+      <Tab.Screen 
+      name={'Settings'} 
+      component={Settings} 
+      options={{
+        tabBarLabel: 'Settings',
+        tabBarColor: '#d02860',
+        tabBarIcon: ({ color }) => (
+          <Ionicons name = 'settings' color = {color} size = {26} /> 
+        ),
+      }}
+      />
     </Tab.Navigator>
+    </Provider>
   )
 }
 
@@ -95,3 +107,5 @@ const App = () => {
     </GestureHandlerRootView>
   )
 }
+
+export default App;
