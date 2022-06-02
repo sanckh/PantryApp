@@ -6,19 +6,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ListItems(c *gin.Context) {
-	owner := c.GetHeader(IdVar) // This gets the identifier out of the http Request
+func ListPantryItems(c *gin.Context) {
+	acc := c.GetString(IdVar) // Auth supplies this value
 
-	// This is mocked to use local data in place of a DB
-	var data *PantryList
-	for _, pList := range allData {
-		if pList.OwnerID == owner {
-			data = pList
-			break
-		}
-	}
+	pantry := GetPantryForAccount(acc)
 	// Format data as desired here
-	b, err := json.Marshal(data)
+	b, err := json.Marshal(pantry.Items)
+	if err != nil {
+		HandleError(c, err)
+	}
+	c.Writer.Write(b)
+}
+
+func ListGroceryItems(c *gin.Context) {
+	acc := c.GetString(IdVar) // Auth supplies this value
+
+	grocery := GetGroceryForAccount(acc)
+	// Format data as desired here
+	b, err := json.Marshal(grocery.Items)
 	if err != nil {
 		HandleError(c, err)
 	}
