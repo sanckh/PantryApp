@@ -1,10 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
-
+AsyncStorage.clear()
 
 const initialState = {
   inventory: [],
   selectedInventoryItem: null,
-  grocery: [],
+  todos: [],
 };
 
 const appSlice = createSlice({
@@ -25,26 +26,33 @@ const appSlice = createSlice({
       state.inventory[index] = action.payload;
 
       if (state.inventory[index].quantity <= state.inventory[index].minQuantity) {
-        state.grocery.push(state.inventory[index]);
-        toast.show("Item added to grocery list");
+        state.todos.push({...state.inventory[index], task: state.inventory[index].name});
+        toast.show("Item added to todos list");
       }
     },
     setSelectedInventoryItem(state, action) {
       state.selectedInventoryItem = action.payload;
     },
 
-    addToGrocery(state, action) {
-      state.grocery.push({id: Math.random().toString(), ...action.payload})
+    addToTodos(state, action) {
+      state.todos.push(action.payload)
     },
-    deleteFromGrocery(state, action) {
+    deleteTodo(state, action) {
       let id = action.payload.id;
-      let index = state.grocery.findIndex(item => item.id === id);
-      state.grocery.splice(index, 1);
+      let index = state.todos.findIndex(item => item.id === id);
+      state.todos.splice(index, 1);
     },
-    updateGroceryItem(state, action) {
+    updateTodo(state, action) {
       let id = action.payload.id;
-      let index = state.grocery.findIndex(item => item.id === id);
-      state.grocery[index] = action.payload;
+      let index = state.todos.findIndex(item => item.id === id);
+      state.todos[index] = action.payload;
+    },
+    clearAllTodos(state) {
+      state.todos = [];
+    },
+    markTodoComplete(state, action) {
+      const id = action.payload.id;
+      state.todos.find(item => item.id === id).completed = true;
     }
 
   }

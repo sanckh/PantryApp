@@ -12,79 +12,43 @@ import {
 import { theme } from '../../core/theme'
 import Header from '../../components/Header'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useSelector } from 'react-redux'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux'
 import RnIncrementDecrementBtn from '../../components/IncDecButton';
+import { appActions } from '../../redux/slices/app-slice'
 
 const GroceryList = () => {
   //state can go here
-  const groceryList = useSelector((state) => state.app.grocery)
-  const [todos, setTodos] = React.useState([]);
+  const todos = useSelector((state) => state.app.todos)
   const [textInput, setTextInput] = React.useState('');
-
-  React.useEffect(() => {
-    getTodosFromUserDevice();
-}, []);
-
-  React.useEffect(() => {
-      saveTodoToUserDevice(todos);
-    }, [todos]);
+  const dispatch = useDispatch()
 
   const addTodo = () => {
-  if (textInput == '') {
-      Alert.alert('Error', 'Please input todo');
-  } else {
-      const newTodo = {
-      id: Math.random(),
-      task: textInput,
-      completed: false,
-      };
-      setTodos([...todos, newTodo]);
-      setTextInput('');
-  }
+    if (textInput == '') {
+        Alert.alert('Error', 'Please input todo');
+    } else {
+        const newTodo = {
+          id: Math.random(),
+          task: textInput,
+          completed: false,
+        };
+        dispatch(appActions.addToTodos(newTodo)) 
+        setTextInput('');
+    }
   };
-
-  const saveTodoToUserDevice = async todos => {
-  try {
-      const stringifyTodos = JSON.stringify(todos);
-      await AsyncStorage.setItem('todos', stringifyTodos);
-  } catch (error) {
-      console.log(error);
-  }
-  };
-
-  const getTodosFromUserDevice = async () => {
-      try {
-        const todos = await AsyncStorage.getItem('todos');
-        if (todos != null) {
-          setTodos(JSON.parse(todos));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
   const markTodoComplete = todoId => {
-    const newTodosItem = todos.map(item => {
-      if (item.id == todoId) {
-        return {...item, completed: true};
-      }
-      return item;
-    });
-
-    setTodos(newTodosItem);
+    dispatch(appActions.markTodoComplete({id: todoId}))
   };
 
   const deleteTodo = todoId => {
-    const newTodosItem = todos.filter(item => item.id != todoId);
-    setTodos(newTodosItem);
+    dispatch(appActions.deleteTodo({id: todoId}))
   };
 
   const clearAllTodos = () => {
     Alert.alert('Confirm', 'Clear todos?', [
       {
         text: 'Yes',
-        onPress: () => setTodos([]),
+        onPress: () => dispatch(appActions.clearAllTodos()),
       },
       {
         text: 'No',
@@ -92,7 +56,7 @@ const GroceryList = () => {
     ]);
   };
 
-  const ListItem = ({ todo }) => {
+  const renderListItem = ({ item: todo }) => {
     return (
       <View style={styles.listItem}>
         <View style ={{flex:1}}>
@@ -120,10 +84,10 @@ const GroceryList = () => {
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={() => deleteTodo(todo.id)} style = {styles.actionIcon}>
-              <View style={[{backgroundColor: 'red', borderRadius: 5}]}>
-                <Ionicons name="trash" size={29} color="white" />
-              </View>
-            </TouchableOpacity>
+          <View style={[{backgroundColor: 'red', borderRadius: 5}]}>
+            <Ionicons name="trash" size={29} color="white" />
+          </View>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -137,13 +101,14 @@ const GroceryList = () => {
       <FlatList
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
-        data={groceryList}
-        renderItem={({ item }) => <ListItem todo={item} />}
+        data={todos}
+        renderItem={renderListItem}
       />
       <View style={styles.footer}>
         <View style={styles.inputContainer}>
           <TextInput placeholder="Add Item" 
           onChangeText = {text => setTextInput(text)}
+          value={textInput}
           />
         </View>
 

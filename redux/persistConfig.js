@@ -4,7 +4,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 import {createWhitelistFilter} from 'redux-persist-transform-filter';
 
-const appFilter = createWhitelistFilter('app', ['inventory']);
+const appFilter = createWhitelistFilter('app', ['inventory', 'todos']);
 
 const migrations = {};
 
