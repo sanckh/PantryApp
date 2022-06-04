@@ -1,7 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
-AsyncStorage.clear()
-
 const initialState = {
   inventory: [],
   selectedInventoryItem: null,
